@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">AD</div>
+        <div class="brand-text">
+          <p class="brand-name">Admin</p>
+          <p class="brand-sub">Dashboard</p>
+        </div>
+      </div>
+
+      <!-- NAV (tabs) -->
+      <nav class="nav">
+        <a class="nav-link active" href="#" data-page="overview"><span class="icon-coin-dollar"></span>Overview</a>
+        <a class="nav-link" href="#" data-page="orders"><span class="icon-cart"></span>Orders</a>
+        <a class="nav-link" href="#" data-page="customers"><span class="icon-users"></span>Customers</a>
+        <a class="nav-link" href="#" data-page="settings"><span class="icon-cog"></span>Settings</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="btn ghost" id="toggleThemeBtn" type="button">Toggle theme</button>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+
+      <!-- PAGE: OVERVIEW -->
+      <section class="page active" data-page="overview">
+        <!-- TOPBAR -->
+        <header class="topbar" id="overview">
+            <div>
+            <h1>Overview</h1>
+            <p class="muted">Live snapshot of performance and orders</p>
+            </div>
+
+            <div class="topbar-actions">
+            <div class="search">
+                <input id="searchInput" type="search" placeholder="Search orders..." />
+            </div>
+            <button class="btn primary" id="exportBtn" type="button">Export CSV</button>
+            </div>
+        </header>
+        <!-- KPI CARDS -->
+        <section class="kpis">
+          <article class="card kpi">
+            <p class="kpi-title">Revenue</p>
+            <p class="kpi-value" id="kpiRevenue">$0</p>
+            <p class="kpi-note muted" id="kpiRevenueNote">—</p>
+          </article>
+
+          <article class="card kpi">
+            <p class="kpi-title">Orders</p>
+            <p class="kpi-value" id="kpiOrders">0</p>
+            <p class="kpi-note muted" id="kpiOrdersNote">—</p>
+          </article>
+
+          <article class="card kpi">
+            <p class="kpi-title">Conversion</p>
+            <p class="kpi-value" id="kpiConversion">0%</p>
+            <p class="kpi-note muted" id="kpiConversionNote">—</p>
+          </article>
+
+          <article class="card kpi">
+            <p class="kpi-title">Refunds</p>
+            <p class="kpi-value" id="kpiRefunds">0</p>
+            <p class="kpi-note muted" id="kpiRefundsNote">—</p>
+          </article>
+        </section>
+
+        <!-- CHART + QUICK STATS -->
+        <section class="grid-2">
+          <article class="card">
+            <div class="card-head">
+              <h2>Revenue (last 7 days)</h2>
+              <span class="pill">Mock data</span>
+            </div>
+
+            <div class="chart-wrap">
+              <canvas id="revenueChart" width="900" height="260" aria-label="Revenue chart"></canvas>
+            </div>
+
+            <div class="legend">
+              <span class="dot"></span>
+              <span class="muted">Daily revenue</span>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-head">
+              <h2>Quick stats</h2>
+              <span class="pill">Today</span>
+            </div>
+
+            <div class="stats">
+              <div class="stat-row">
+                <span class="muted">Avg order value</span>
+                <strong id="avgOrder">$0</strong>
+              </div>
+              <div class="stat-row">
+                <span class="muted">Top status</span>
+                <strong id="topStatus">—</strong>
+              </div>
+              <div class="stat-row">
+                <span class="muted">Unique customers</span>
+                <strong id="uniqueCustomers">0</strong>
+              </div>
+              <div class="stat-row">
+                <span class="muted">Pending orders</span>
+                <strong id="pendingOrders">0</strong>
+              </div>
+            </div>
+
+            <hr class="sep" />
+
+            <div class="filters">
+              <div class="field">
+                <label for="statusFilter">Status</label>
+                <select id="statusFilter">
+                  <option value="all">All</option>
+                  <option value="paid">Paid</option>
+                  <option value="pending">Pending</option>
+                  <option value="refunded">Refunded</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="sortBy">Sort</label>
+                <select id="sortBy">
+                  <option value="date_desc">Date (newest)</option>
+                  <option value="date_asc">Date (oldest)</option>
+                  <option value="amount_desc">Amount (high → low)</option>
+                  <option value="amount_asc">Amount (low → high)</option>
+                </select>
+              </div>
+            </div>
+          </article>
+        </section>
+      </section>
+
+      <!-- PAGE: ORDERS -->
+      <section class="page" data-page="orders">
+        <section class="card" id="orders">
+          <div class="card-head">
+            <h2>Orders</h2>
+            <div class="table-meta muted" id="tableMeta">0 results</div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Order</th>
+                  <th>Customer</th>
+                  <th>Date</th>
+                  <th class="right">Amount</th>
+                  <th>Status</th>
+                  <th class="right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="ordersTbody">
+                <!-- rows injected by JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <div class="pagination">
+            <button class="btn" id="prevPage" type="button">Prev</button>
+            <span class="muted" id="pageInfo">Page 1</span>
+            <button class="btn" id="nextPage" type="button">Next</button>
+          </div>
+        </section>
+      </section>
+
+      <!-- PAGE: CUSTOMERS -->
+      <section class="page" data-page="customers">
+        <section class="card">
+          <div class="card-head">
+            <h2>Customers</h2>
+            <span class="pill">Mock</span>
+          </div>
+          <p class="muted">Customer management view (coming next).</p>
+        </section>
+      </section>
+
+      <!-- PAGE: SETTINGS -->
+      <section class="page" data-page="settings">
+        <section class="card">
+          <div class="card-head">
+            <h2>Settings</h2>
+            <span class="pill">UI</span>
+          </div>
+
+          <div class="filters" style="grid-template-columns: 1fr;">
+            <div class="field">
+              <label>Theme</label>
+              <button class="btn ghost" id="toggleThemeBtn2" type="button">Toggle theme</button>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <footer class="footer muted">
+        Built with HTML + CSS + JS (mock data).
+      </footer>
+    </main>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal" id="orderModal" aria-hidden="true">
+    <div class="modal-backdrop" data-close="true"></div>
+
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head">
+        <div>
+          <h3 id="modalTitle">Order</h3>
+          <p class="muted" id="modalSubtitle">Details</p>
+        </div>
+
+        <button class="icon-btn" id="closeModalBtn" type="button" aria-label="Close">
+          ✕
+        </button>
+      </div>
+
+      <div class="modal-body" id="modalBody">
+        <!-- injected by JS -->
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn" id="modalCloseBtn" type="button">Close</button>
+        <button class="btn primary" id="modalRefundBtn" type="button">Refund</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="./js/app.js"></script>
+</body>
+</html>
